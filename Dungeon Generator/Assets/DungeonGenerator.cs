@@ -22,9 +22,9 @@ public class DungeonGenerator : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		//GenerateDungeon ();
+		GenerateDungeon ();
 
-		GenerateStart ();
+		//GenerateStart ();
 	}
 	
 	// Update is called once per frame
@@ -61,30 +61,30 @@ public class DungeonGenerator : MonoBehaviour {
 
 		GameObject Room = GenerateRandomRoomSize();
 
-		float newxPos = (LastRoom.transform.localScale.x * 10 / 2 + 10) + (Room.transform.localScale.x * 10 / 2) + LastRoom.transform.position.x;
-		float newzPos = (LastRoom.transform.localScale.z * 10 / 2 + 10) + (Room.transform.localScale.z * 10 / 2) + LastRoom.transform.position.z;
+		float roomWidth = (LastRoom.transform.localScale.x * 10 / 2 + 10) + (Room.transform.localScale.x * 10 / 2);
+		float roomHeight = (LastRoom.transform.localScale.z * 10 / 2 + 10) + (Room.transform.localScale.z * 10 / 2);
 		float oldxPos = LastRoom.transform.position.x;
 		float oldzPos = LastRoom.transform.position.z;
 
 
 
 		if (RoomDirection == 1) {
-			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(oldxPos, 0, newzPos), Quaternion.identity);
+			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(oldxPos, 0, oldzPos + roomHeight), Quaternion.identity);
 			CurrentRoomScript = CurrentRoom.GetComponent<RoomScript>();
 			CurrentRoomScript.SouthExit = true;
 		}
 		if (RoomDirection == 2) {
-			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(newxPos, 0, oldzPos), Quaternion.identity);
+			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(oldxPos + roomWidth, 0, oldzPos), Quaternion.identity);
 			CurrentRoomScript = CurrentRoom.GetComponent<RoomScript>();
 			CurrentRoomScript.WestExit = true;
 		}
 		if (RoomDirection == 3) {
-			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(oldxPos, 0, -newzPos), Quaternion.identity);
+			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(oldxPos, 0, oldzPos - roomHeight), Quaternion.identity);
 			CurrentRoomScript = CurrentRoom.GetComponent<RoomScript>();
 			CurrentRoomScript.NorthExit = true;
 		}
 		if (RoomDirection == 4) {
-			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(-newxPos, 0, oldzPos), Quaternion.identity);
+			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(oldxPos - roomWidth, 0, oldzPos), Quaternion.identity);
 			CurrentRoomScript = CurrentRoom.GetComponent<RoomScript>();
 			CurrentRoomScript.EastExit = true;
 		}
@@ -114,7 +114,7 @@ public class DungeonGenerator : MonoBehaviour {
 			CurrentRoomScript.SouthExit = true;
 		}
 		if (RoomDirection == 4) {
-			Instantiate(Door, new Vector3(oldxPos + roomWidth, 0, oldzPos), Quaternion.identity);
+			Instantiate(Door, new Vector3(oldxPos - roomWidth, 0, oldzPos), Quaternion.identity);
 			CurrentRoomScript.WestExit = true;
 		}
 	}
