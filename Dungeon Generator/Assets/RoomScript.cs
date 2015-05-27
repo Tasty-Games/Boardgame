@@ -3,10 +3,10 @@ using System.Collections;
 
 public class RoomScript : MonoBehaviour {
 
-	private bool NorthExit;
-	private bool EastExit;
-	private bool SouthExit;
-	private bool WestExit;
+	public bool NorthExit;
+	public bool EastExit;
+	public bool SouthExit;
+	public bool WestExit;
 
 	// Use this for initialization
 	void Start () {
