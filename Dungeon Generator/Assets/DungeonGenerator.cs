@@ -4,20 +4,27 @@ using System.Collections;
 public class DungeonGenerator : MonoBehaviour {
 	
 	private int NumberOfRoomSizes = 3;
+	public int AmountOfRooms;
 	
 	public GameObject RoomSmall;
 	public GameObject RoomMedium;
 	public GameObject RoomLarge;
 	public GameObject Door;
 	
+	public GameObject CurrentRoom;
+	public RoomScript CurrentRoomScript;
+
 	public GameObject LastRoom;
-	
+	public RoomScript LastRoomScript;
+
+	public int RoomDirection;
 	
 	
 	// Use this for initialization
 	void Start () {
+		//GenerateDungeon ();
+
 		GenerateStart ();
-		GenerateDoor ();
 	}
 	
 	// Update is called once per frame
@@ -26,7 +33,8 @@ public class DungeonGenerator : MonoBehaviour {
 	}
 	
 	void GenerateStart () {
-		LastRoom = (GameObject) Instantiate (GenerateRandomRoomSize (), new Vector3 (0, 0, 0), Quaternion.identity);
+		CurrentRoom = (GameObject) Instantiate (GenerateRandomRoomSize (), new Vector3 (0, 0, 0), Quaternion.identity);
+		CurrentRoomScript = CurrentRoom.GetComponent<RoomScript> ();
 	}
 	
 	GameObject GenerateRandomRoomSize () {
@@ -46,26 +54,78 @@ public class DungeonGenerator : MonoBehaviour {
 			return null;
 		}
 	}
-	
-	void GenerateDoor () {
-		float rnd = Random.Range (1, 5);
-		
-		float newzPos = (LastRoom.transform.localScale.z * 10 / 2 + Door.transform.localScale.z * 10 / 2) + LastRoom.transform.position.z;
-		float newxPos = (LastRoom.transform.localScale.x * 10 / 2 + Door.transform.localScale.x * 10 / 2) + LastRoom.transform.position.x;
-		float oldzPos = LastRoom.transform.position.z;
+
+	public void GenerateRoom () {
+		LastRoom = CurrentRoom;
+		LastRoomScript = CurrentRoomScript;
+
+		GameObject Room = GenerateRandomRoomSize();
+
+		float newxPos = (LastRoom.transform.localScale.x * 10 / 2 + 10) + (Room.transform.localScale.x * 10 / 2) + LastRoom.transform.position.x;
+		float newzPos = (LastRoom.transform.localScale.z * 10 / 2 + 10) + (Room.transform.localScale.z * 10 / 2) + LastRoom.transform.position.z;
 		float oldxPos = LastRoom.transform.position.x;
+		float oldzPos = LastRoom.transform.position.z;
+
+
+
+		if (RoomDirection == 1) {
+			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(oldxPos, 0, newzPos), Quaternion.identity);
+			CurrentRoomScript = CurrentRoom.GetComponent<RoomScript>();
+			CurrentRoomScript.SouthExit = true;
+		}
+		if (RoomDirection == 2) {
+			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(newxPos, 0, oldzPos), Quaternion.identity);
+			CurrentRoomScript = CurrentRoom.GetComponent<RoomScript>();
+			CurrentRoomScript.WestExit = true;
+		}
+		if (RoomDirection == 3) {
+			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(oldxPos, 0, -newzPos), Quaternion.identity);
+			CurrentRoomScript = CurrentRoom.GetComponent<RoomScript>();
+			CurrentRoomScript.NorthExit = true;
+		}
+		if (RoomDirection == 4) {
+			CurrentRoom = (GameObject) Instantiate(Room, new Vector3(-newxPos, 0, oldzPos), Quaternion.identity);
+			CurrentRoomScript = CurrentRoom.GetComponent<RoomScript>();
+			CurrentRoomScript.EastExit = true;
+		}
+
+		//CurrentRoom = Instantiate(GenerateRandomRoomSize, new Vector3
+	}
+	
+	public void GenerateDoor () {
+		RoomDirection = Random.Range (1, 5);
 		
-		if (rnd == 1) {
-			Instantiate(Door, new Vector3(oldxPos, 0, newzPos), Quaternion.identity);
+		float roomHeight = (CurrentRoom.transform.localScale.z * 10 / 2 + Door.transform.localScale.z * 10 / 2);
+		float roomWidth = (CurrentRoom.transform.localScale.x * 10 / 2 + Door.transform.localScale.x * 10 / 2);
+		float oldzPos = CurrentRoom.transform.position.z;
+		float oldxPos = CurrentRoom.transform.position.x;
+
+		
+		if (RoomDirection == 1) {
+			Instantiate(Door, new Vector3(oldxPos, 0, oldzPos + roomHeight), Quaternion.identity);
+			CurrentRoomScript.NorthExit = true;
 		}
-		if (rnd == 2) {
-			Instantiate(Door, new Vector3(newxPos, 0, oldzPos), Quaternion.identity);
+		if (RoomDirection == 2) {
+			Instantiate(Door, new Vector3(oldxPos + roomWidth, 0, oldzPos), Quaternion.identity);
+			CurrentRoomScript.EastExit = true;
 		}
-		if (rnd == 3) {
-			Instantiate(Door, new Vector3(oldxPos, 0, -newzPos), Quaternion.identity);
+		if (RoomDirection == 3) {
+			Instantiate(Door, new Vector3(oldxPos, 0, oldzPos - roomHeight), Quaternion.identity);
+			CurrentRoomScript.SouthExit = true;
 		}
-		if (rnd == 4) {
-			Instantiate(Door, new Vector3(-newxPos, 0, oldzPos), Quaternion.identity);
+		if (RoomDirection == 4) {
+			Instantiate(Door, new Vector3(oldxPos + roomWidth, 0, oldzPos), Quaternion.identity);
+			CurrentRoomScript.WestExit = true;
+		}
+	}
+
+	void GenerateDungeon () {
+		GenerateStart ();
+		GenerateDoor ();
+
+		for (int i = 0; i < AmountOfRooms; i++) {
+			GenerateRoom();
+			GenerateDoor();
 		}
 	}
 	
