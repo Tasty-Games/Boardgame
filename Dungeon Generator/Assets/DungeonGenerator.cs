@@ -18,15 +18,13 @@ public class DungeonGenerator : MonoBehaviour {
 	public RoomScript LastRoomScript;
 
 	public int RoomDirection;
-
-	public int DoorTries = 0;
 	
 	
 	// Use this for initialization
 	void Start () {
 		GenerateDungeon ();
 
-		//DGGHGFFGFGGFFGFFVGenerateStart ();
+		//GenerateStart ();
 	}
 	
 	// Update is called once per frame
@@ -98,7 +96,6 @@ public class DungeonGenerator : MonoBehaviour {
 		RoomDirection = Random.Range (1, 5);
 		Debug.Log (RoomDirection);
 
-		DoorTries++;
 		//Debug.Log (RoomDirection);
 		
 		float roomHeight = (CurrentRoom.transform.localScale.z * 10 / 2 + Door.transform.localScale.z * 10 / 2);
@@ -107,46 +104,20 @@ public class DungeonGenerator : MonoBehaviour {
 		float oldxPos = CurrentRoom.transform.position.x;
 		
 		if (RoomDirection == 1) {
-			if (!CurrentRoomScript.NorthExit) {
-				Instantiate(Door, new Vector3(oldxPos, 0, oldzPos + roomHeight), Quaternion.identity);
-				CurrentRoomScript.NorthExit = true;
-			}
-			else {
-				GenerateDoor();
-			}
+			Instantiate(Door, new Vector3(oldxPos, 0, oldzPos + roomHeight), Quaternion.identity);
+			CurrentRoomScript.NorthExit = true;
 		}
 		if (RoomDirection == 2) {
-
-			if (!CurrentRoomScript.EastExit) {
-				Instantiate(Door, new Vector3(oldxPos + roomWidth, 0, oldzPos), Quaternion.identity);
-				CurrentRoomScript.EastExit = true;
-				DoorTries = 0;
-			}
-			else {
-				GenerateDoor();
-			}
+			Instantiate(Door, new Vector3(oldxPos + roomWidth, 0, oldzPos), Quaternion.identity);
+			CurrentRoomScript.EastExit = true;
 		}
 		if (RoomDirection == 3) {
-
-			if (!CurrentRoomScript.SouthExit) {
-				Instantiate(Door, new Vector3(oldxPos, 0, oldzPos - roomHeight), Quaternion.identity);
-				CurrentRoomScript.SouthExit = true;
-				DoorTries = 0;
-			}
-			else {
-				GenerateDoor();
-			}
+			Instantiate(Door, new Vector3(oldxPos, 0, oldzPos - roomHeight), Quaternion.identity);
+			CurrentRoomScript.SouthExit = true;
 		}
 		if (RoomDirection == 4) {
-
-			if (!CurrentRoomScript.WestExit) {
-				Instantiate(Door, new Vector3(oldxPos - roomWidth, 0, oldzPos), Quaternion.identity);
-				CurrentRoomScript.WestExit = true;
-				DoorTries = 0;
-			}
-			else {
-				GenerateDoor();
-			}
+			Instantiate(Door, new Vector3(oldxPos - roomWidth, 0, oldzPos), Quaternion.identity);
+			CurrentRoomScript.WestExit = true;
 		}
 	}
 
